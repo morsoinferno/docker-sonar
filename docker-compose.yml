@@ -9,7 +9,7 @@ services:
     # networks:
     #   - sonarnet
     links:
-      - db
+      - postgres
     restart: always
     environment:
       SONARQUBE_JDBC_URL:
@@ -34,16 +34,16 @@ services:
       - "/bin/true"
     volumes:
       # no es posible que solo sea sonarqube, hay que mapear cada carpeta
-       - /srv/docker/sonarqube/sonarqube/conf:/opt/sonarqube/conf:Z
-       - /srv/docker/sonarqube/sonarqube/data:/opt/sonarqube/data:Z
-       - /srv/docker/sonarqube/sonarqube/extensions:/opt/sonarqube/extensions:Z
+       - /srv/docker/sonarqube/sonarqube/conf:/opt/sonarqube/conf
+       - /srv/docker/sonarqube/sonarqube/data:/opt/sonarqube/data
+       - /srv/docker/sonarqube/sonarqube/extensions:/opt/sonarqube/extensions
       # la imagen de sonarqube trae plugins instalados por defecto, por lo que al mapear
       # un volume esto esconde esos plugins. Es necesario instalar los plugins para analizar
-       - /srv/docker/sonarqube/sonarqube/bundled-plugins:/opt/sonarqube/lib/bundled-plugins:Z
+       - /srv/docker/sonarqube/sonarqube/bundled-plugins:/opt/sonarqube/lib/bundled-plugins
       #tty: true
       #stdin_open: true
 
-  db:
+  postgres:
     image: postgres:9.6.4
     # networks:
     #   - sonarnet
@@ -52,7 +52,7 @@ services:
       POSTGRES_PASSWORD:
     volumes:
     # Crear un contenedor sidekick para cada volume
-      - /srv/docker/sonarqube/postgresql:/var/lib/postgresql:Z # pq Z?
+      - /srv/docker/sonarqube/postgresql/data:/var/lib/postgresql/data
     #   - postgresql:/var/lib/postgresql
     # INVESTIGAR BIEN ESTE TEMA: Muchos de los servicios de CI no crean un volume
     # para mapear /postgresql/data
